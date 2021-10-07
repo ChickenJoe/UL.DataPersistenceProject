@@ -22,6 +22,11 @@ public class MainManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (HiScoreManager.Instance.playerName != null)
+        {
+            // playerName isn't null so saved data was loaded
+
+        }
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -57,7 +62,7 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                SceneManager.LoadScene(0);
             }
         }
     }
@@ -70,6 +75,11 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
+        if (m_Points > HiScoreManager.Instance.hiscore)
+        {
+            HiScoreManager.Instance.hiscore = m_Points;
+            HiScoreManager.Instance.SaveScore();
+        }
         m_GameOver = true;
         GameOverText.SetActive(true);
     }
