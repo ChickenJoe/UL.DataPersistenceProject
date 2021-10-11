@@ -2,14 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+using TMPro;
 using System.IO;
 
 public class HiScoreManager : MonoBehaviour
 {
     public static HiScoreManager Instance;
-    public int hiscore;
-    public string playerName;
+    public static string playerName;
+    public string hiscoreName;
+    public int hiscoreScore;
     public Text hiscoreText;
+    public TMP_Text inputNameField;
+    public GameObject menuItems;
+
 
     private void Awake()
     {
@@ -35,7 +41,9 @@ public class HiScoreManager : MonoBehaviour
     {
         SaveData data = new SaveData();
         data.savedName = playerName;
-        data.savedScore = hiscore;
+        data.savedScore = hiscoreScore;
+
+        hiscoreText.text = "Hiscore - " + playerName + ": " + hiscoreScore.ToString();
 
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
@@ -49,10 +57,27 @@ public class HiScoreManager : MonoBehaviour
             string json = File.ReadAllText(path);
             SaveData data = JsonUtility.FromJson<SaveData>(json);
 
-            playerName = data.savedName;
-            hiscore = data.savedScore;
+            hiscoreName = data.savedName;
+            hiscoreScore = data.savedScore;
 
-            //hiscoreText.text = "Hiscore - " + 
+            hiscoreText.text = "Hiscore - " + hiscoreName + ": " + hiscoreScore.ToString();
         }
+    }
+
+    public void StoreName()
+    {
+        playerName = inputNameField.text;
+    }
+
+    public void StartGame()
+    {
+        menuItems.SetActive(false);
+        SceneManager.LoadScene(1);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
+        menuItems.SetActive(true);
     }
 }

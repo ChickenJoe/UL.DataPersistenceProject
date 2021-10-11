@@ -20,13 +20,9 @@ public class MainManager : MonoBehaviour
 
     
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        if (HiScoreManager.Instance.playerName != null)
-        {
-            // playerName isn't null so saved data was loaded
-
-        }
+        ScoreText.text = HiScoreManager.playerName + ": " + m_Points;
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -62,7 +58,10 @@ public class MainManager : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                SceneManager.LoadScene(0);
+                m_Started = false;
+                m_GameOver = false;
+                GameOverText.SetActive(false);
+                HiScoreManager.Instance.RestartGame();
             }
         }
     }
@@ -70,15 +69,16 @@ public class MainManager : MonoBehaviour
     void AddPoint(int point)
     {
         m_Points += point;
-        ScoreText.text = $"Score : {m_Points}";
+        ScoreText.text = HiScoreManager.playerName + ": " + m_Points.ToString();
     }
 
     public void GameOver()
     {
-        if (m_Points > HiScoreManager.Instance.hiscore)
+        if (m_Points > HiScoreManager.Instance.hiscoreScore)
         {
-            HiScoreManager.Instance.hiscore = m_Points;
+            HiScoreManager.Instance.hiscoreScore = m_Points;
             HiScoreManager.Instance.SaveScore();
+            HiScoreManager.Instance.LoadScore();
         }
         m_GameOver = true;
         GameOverText.SetActive(true);
